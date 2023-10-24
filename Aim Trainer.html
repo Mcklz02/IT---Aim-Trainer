@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Aim Trainer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+body {
+  background-color: rgb(32, 32, 70);
+  font-family: Arial, Helvetica, sans-serif;
+  color: white
+}
+#header {
+  background-color: rgb(51, 51, 69);
+  border-radius: 25px;
+  padding: 25px;
+  width: 750px;
+  height: 75px;
+  margin: auto;
+  text-align: center;
+  z-index: 1;
+}
+ #settings-button {
+ 	position: relative;
+    top: 250px;
+    float: right;
+	margin: auto;
+	width: 90px;
+	height: 90px;
+    border-radius: 25px;
+	background-color: rgb(51, 51, 69);
+	text-align: center;
+}
+ #settings {
+ 	display: block;
+ 	position: absolute;
+    top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 750px;
+	height: 500px;
+    border-radius: 25px;
+	background-color: rgb(39, 39, 72);
+	text-align: center;
+    z-index: 2;
+}
+ .button {
+	width: 150px;
+	height: 75px;
+    margin: 15px;
+    margin-top: 30px;
+    padding-bottom: 15px;
+    float: left;
+    border-radius: 25px;
+	background-color: rgb(51, 51, 69);
+	text-align: center;
+    font-size:175%;
+ }
+  .display {
+    position: absolute;
+    top: 275px;
+	left: 50%;
+	width: 250px;
+	height: 100px;
+    border-radius: 25px;
+	background-color: rgb(51, 51, 69);
+	text-align: center;
+    font-size:175%;
+ }
+ #game-container {
+ 	position: relative;
+	top: 250px;
+	margin: auto;
+	width: 1250px;
+	height: 700px;
+    border-radius: 25px;
+	background-color: rgb(51, 51, 69);
+    z-index: 1;
+}
+
+</style>
+</head>
+<body>
+
+<div id="header">
+	<h1>Aim Trainer</h1>
+</div>
+<div id="settings-button">
+	<br>
+	<i class="material-icons", style="font-size:50px;">settings</i>
+</div>
+<div id="settings">
+	<h1>Settings</h1>
+    <div class="button", style="margin-right:30px">
+    	<p> <b>Speed</b> </p>
+    </div>
+    <div class="button">
+    	<p> Fast </p>
+    </div>
+    <div class="button">
+    	<p> Medium </p>
+    </div>
+    <div class="button">
+    	<p> Slow </p>
+    </div>
+    <div class="button", style="margin-right:30px">
+    	<p> <b>Disappear</b> </p>
+    </div>
+    <div class="button">
+    	<p> Fast </p>
+    </div>
+    <div class="button">
+    	<p> Medium </p>
+    </div>
+    <div class="button">
+    	<p> Slow </p>
+    </div>
+    <div class="button", style="margin-right:30px">
+    	<p> <b>Size</b> </p>
+    </div>
+    <div class="button">
+    	<p> Big </p>
+    </div>
+    <div class="button">
+    	<p> Medium </p>
+    </div>
+    <div class="button">
+    	<p> Small </p>
+    </div>
+</div>
+<div class="display", style="transform: translate(-475px, 0)"> Points: </div> 
+<div class="display", style="transform: translate(-125px, 0)"> Accuracy: </div> 
+<div class="display", style="transform: translate(+225px, 0)"> Reaction Speed: </div> 
+<div id="game-container"> </div>
+
+</body>
+</html>
+
+
