@@ -2,13 +2,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aim Trainer</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <style>
 body {
   background-color: rgb(32, 32, 70);
   font-family: Arial, Helvetica, sans-serif;
-  color: white
+  color: white;
+ 
 }
 #header {
   background-color: rgb(51, 51, 69);
@@ -30,7 +32,7 @@ body {
     border-radius: 25px;
     background-color: rgb(51, 51, 69);
     text-align: center;
-    z-index: 3;
+    z-index: 4;
 }
  #settings-button:hover, .button:hover {
  	background-color: orange;
@@ -46,7 +48,7 @@ body {
     border-radius: 25px;
     background-color: rgb(39, 39, 72);
     text-align: center;
-    z-index: 2;
+    z-index: 3;
 }
  .button {
     width: 150px;
@@ -94,18 +96,20 @@ body {
     background-color: rgb(51, 51, 69);
     z-index: 1;
 }
+.circle {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: orange;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+}
 
 </style>
 </head>
 <body>
-<script>
-function ShowSettings() {
-	if(document.getElementById("settings").style.display == "block"){
-		document.getElementById("settings").style.display = "none";
-    } else {
-    	document.getElementById("settings").style.display = "block"}
-}
-</script>
+
 
 <div id="header">
 	<h1>Aim Trainer</h1>
@@ -158,6 +162,59 @@ function ShowSettings() {
 <div class="display", style="transform: translate(+225px, 0)"> Reaction Speed: </div> 
 <div id="game-container"> </div>
 
+<script>
+function ShowSettings() {
+	if(document.getElementById("settings").style.display == "block"){
+		document.getElementById("settings").style.display = "none";
+    } else {
+    	document.getElementById("settings").style.display = "block"}
+}
+
+const gameContainer = document.getElementById('game-container');
+function createCircle() {
+            const circle = document.createElement('div');
+            const circle2 = document.createElement('div');
+            const circle3 = document.createElement('div');
+            circle.classList.add('circle');
+            circle2.classList.add('circle');
+            circle3.classList.add('circle');
+
+            const size = 100;
+            const maxX = gameContainer.clientWidth - size;
+            const maxY = gameContainer.clientHeight - size;
+
+            const x = Math.random() * maxX;
+            const y = Math.random() * maxY;
+
+            circle.style.width = `${size}px`;
+            circle.style.height = `${size}px`;
+            circle.style.left = `${x}px`;
+            circle.style.top = `${y}px`;
+            
+            circle2.style.width = `${2*size/3}px`;
+            circle2.style.height = `${2*size/3}px`;
+            circle2.style.left = `${x+0.173*size}px`;
+            circle2.style.top = `${y+0.173*size}px`;
+            circle2.style.backgroundColor = "red";
+            
+            circle3.style.width = `${size/3}px`;
+            circle3.style.height = `${size/3}px`;
+            circle3.style.left = `${x+0.345*size}px`;
+            circle3.style.top = `${y+0.345*size}px`;
+            
+            gameContainer.appendChild(circle);
+            gameContainer.appendChild(circle2);
+            gameContainer.appendChild(circle3);
+
+            setTimeout(() => {
+                circle.remove();
+                circle2.remove();
+                circle3.remove();
+            }, 2000);
+        }
+
+setInterval(createCircle, 1000);
+</script>
 </body>
 </html>
 
