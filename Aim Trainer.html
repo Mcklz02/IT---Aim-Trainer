@@ -86,6 +86,15 @@ body {
     text-align: center;
     font-size:175%;
  }
+#points {
+	transform: translate(-475px, 0);
+}
+#accuracy {
+	transform: translate(-125px, 0);
+}
+#reac-speed {
+	transform: translate(+225px, 0);
+}
  #game-container {
     position: relative;
     top: 250px;
@@ -157,9 +166,9 @@ body {
     	<p> Small </p>
     </div>
 </div>
-<div class="display", style="transform: translate(-475px, 0)"> Points: </div> 
-<div class="display", style="transform: translate(-125px, 0)"> Accuracy: </div> 
-<div class="display", style="transform: translate(+225px, 0)"> Reaction Speed: </div> 
+<div class="display", id="points"> Points: </div> 
+<div class="display", id="accuracy"> Accuracy: </div> 
+<div class="display", id="reac-speed"> Reaction Speed: </div> 
 <div id="game-container"> </div>
 
 <script>
@@ -169,15 +178,92 @@ function ShowSettings() {
     } else {
     	document.getElementById("settings").style.display = "block"}
 }
-
+const pointsElement = document.getElementById('points');
+const accElement = document.getElementById('accuracy');
+const reacElement = document.getElementById('reac-speed');
 const gameContainer = document.getElementById('game-container');
+let Points = 0;
+function calcPoints(m, a, tm, t1){
+	Points += m * (50 * a + 50 * ((tm - t1) / tm));
+	Points = Math.ceil(Points);
+	pointsElement.innerHTML = 'Points: \n' + Points;
+}
+let mult = 1;
+let acc;
+let tmax = 2000;
+let t;
+let freq = 750;
+let maxN = Math.ceil(tmax/freq);
+let cycle = 0;
+let cycleClick = 0;
+let cycleMult = 0;
+const startTime = new Array(maxN);
+const flag = new Array(maxN);
+function circleClick(){
+
+	if(event.target.classList.contains('circle')){
+		let endTime = new Date();
+		t = endTime - startTime[cycleClick];
+		reacElement.innerHTML = t;
+		flag[cycleClick] = 1;
+		cycleClick++;
+		if(cycleClick == maxN)
+			cycleClick = 0;
+		//reacElement.innerHTML = cycleClick;
+		mult++;
+		accElement.innerHTML = mult;
+	}
+
+	if (event.target.id == 'circle1') {
+		acc = 0.33;
+		event.target.nextSibling.nextSibling.remove();
+		event.target.nextSibling.remove();
+		event.target.remove();
+
+		calcPoints(mult, acc, tmax, t);
+	}
+	if (event.target.id == 'circle2') {
+		acc = 0.66;
+		event.target.previousSibling.remove();
+		event.target.nextSibling.remove();
+		event.target.remove();
+		calcPoints(mult, acc, tmax, t);
+	}
+	if (event.target.id == 'circle3') {
+		acc = 1;
+		event.target.previousSibling.previousSibling.remove();
+		event.target.previousSibling.remove();
+		event.target.remove();
+		calcPoints(mult, acc, tmax, t);
+	}
+	
+}
+gameContainer.addEventListener('click', circleClick);
+
+function multCheck(){
+	if(flag[cycleMult] == 0){
+		cycleClick++;
+		if(cycleClick == maxN)
+			cycleClick = 0;
+		//reacElement.innerHTML = cycleClick;
+		mult = 1;
+		accElement.innerHTML = mult;
+	}
+	cycleMult++;
+	if(cycleMult == maxN)
+		cycleMult = 0;
+}
+
 function createCircle() {
             const circle = document.createElement('div');
             const circle2 = document.createElement('div');
             const circle3 = document.createElement('div');
             circle.classList.add('circle');
+			circle.id = 'circle1';
             circle2.classList.add('circle');
+			circle2.id = 'circle2';
             circle3.classList.add('circle');
+			circle3.id = 'circle3';
 
             const size = 100;
             const maxX = gameContainer.clientWidth - size;
@@ -206,15 +292,23 @@ function createCircle() {
             gameContainer.appendChild(circle);
             gameContainer.appendChild(circle2);
             gameContainer.appendChild(circle3);
-
+			
+			startTime[cycle] = new Date();
+			flag[cycle] = 0;
+			cycle++;
+			if(cycle == maxN)
+				cycle = 0;
+			//accElement.innerHTML = cycle;
+			
             setTimeout(() => {
                 circle.remove();
                 circle2.remove();
                 circle3.remove();
-            }, 2000);
+            }, tmax);
+			setTimeout(multCheck, tmax);
         }
+setInterval(createCircle, freq);
 
-setInterval(createCircle, 1000);
 </script>
 </body>
 </html>
