@@ -1,4 +1,4 @@
-                                                                                                          
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -130,40 +130,40 @@ body {
 <div id="settings">
 	<h1>Settings</h1>
     <div class="setting-category">
-    	<p> <b>Speed</b> </p>
+    	<p> <b>Frequency</b> </p>
     </div>
     <div class="button", id="speed-fast">
-    	<p> Fast </p>
+    	<p> High </p>
     </div>
     <div class="button", id="speed-normal">
     	<p> Normal </p>
     </div>
     <div class="button", id="speed-slow">
-    	<p> Slow </p>
+    	<p> Low </p>
     </div>
     <div class="setting-category">
-    	<p> <b>Disappear</b> </p>
+    	<p> <b>Max time</b> </p>
     </div>
     <div class="button", id="disap-fast">
-    	<p> Fast </p>
+    	<p> Short </p>
     </div>
     <div class="button", id="disap-normal">
     	<p> Normal </p>
     </div>
     <div class="button", id="disap-slow">
-    	<p> Slow </p>
+    	<p> Long </p>
     </div>
     <div class="setting-category">
     	<p> <b>Size</b> </p>
     </div>
-    <div class="button", id="size-big">
-    	<p> Big </p>
-    </div>
+    <div class="button", id="size-small">
+    	<p> Small </p>
+    </div>    
     <div class="button", id="size-normal">
     	<p> Normal </p>
     </div>
-    <div class="button", id="size-small">
-    	<p> Small </p>
+	<div class="button", id="size-big">
+    	<p> Big </p>
     </div>
 </div>
 <div class="display", id="points"> Points: </div> 
@@ -210,7 +210,7 @@ function Menu() {
 			tmax = 1500;
 			break;
 		case "disap-slow":
-			tmax = 2000;
+			tmax = 2500;
 			break;		
 		case "size-big":
 			size = 150;
