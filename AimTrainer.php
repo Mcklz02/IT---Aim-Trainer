@@ -11,12 +11,49 @@ $username = "root";
 $password = "";
 $dbname = "leaderboard";
 
-// Create connection
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 
 if (!$conn) {
   die("Connection failed: " . mysqli_connect_error());
 }
+
+		if ($_SERVER["REQUEST_METHOD"] == "POST") {
+			$userName = $_POST["userName"];
+			$formPoints = $_POST["formPoints"];
+			
+			$selectTop10 = "SELECT Name, Score FROM top10";
+			$resultTop10 = mysqli_query($conn, $selectTop10);
+			if($resultTop10){
+				$top10 = mysqli_fetch_all($resultTop10, MYSQLI_ASSOC);
+				$isInTop10 = false;
+				foreach($top10 as $entry){
+					if($formPoints > $entry['Score']){
+						$isInTop10 = true;
+						break;
+					}
+				}
+				if($isInTop10){
+					$top10[] = array('Name'=>$userName, 'Score'=>$formPoints);
+					usort($top10, function($a, $b){
+						return $b['Score'] - $a['Score'];
+					});
+					$top10 = array_slice($top10, 0, 10);
+					$i = 1;
+					foreach ($top10 as $entry) {
+						
+						mysqli_query($conn, "UPDATE top10 SET Name='{$entry['Name']}', Score={$entry['Score']} WHERE id = $i");
+						$i = $i+1;
+					}
+					echo "success";
+				}else{
+					echo "not in top 10";
+				}
+			}else{
+				echo "select error";
+			}			
+		}else{
+			echo "fail";
+		}
 ?>
 <style>
 body {
@@ -149,6 +186,7 @@ th {
 	transform: translate(+225px, 0);
 }
  #game-container {
+	display: block;
     position: relative;
     top: 250px;
     margin: auto;
@@ -247,6 +285,16 @@ th {
 <div class="display", id="accuracy"> Accuracy: </div> 
 <div class="display", id="reac-speed"> Reaction Speed: </div> 
 <div id="game-container"> </div>
+<div id="endGameForm", style="display:none"> 
+	<form action="AimTrainer.php" method="post">
+        <label for="userName">Your Name:</label>
+        <input type="text" id="userName" name="userName">
+
+        <input type="hidden" id="formPoints" name="formPoints" value="0">
+
+        <input type="submit" value="Submit">
+    </form>
+</div>
 
 <script>
 let mult = 1;
@@ -356,16 +404,13 @@ function circleClick(){
 	
 }
 gameContainer.addEventListener('click', circleClick);
-function addToLeadeboard(){
-	<?php
-		$sql = "UPDATE top10 SET Name='cos', Score='123' WHERE id=1";
-	?>
-}
+
 function gameEnd(){
-//	pointsElement.innerHTML = "123";
 	if(event.key == " "){
 		clearInterval(Speed);
-		addToLeadeboard();
+		document.getElementById("endGameForm").style.display = "block";
+		document.getElementById("formPoints").value = Points;
+		// wyswietlenie komunikatu o zdobytych pkt (moze w formularzu?)
 	}
 }
 document.addEventListener('keypress', gameEnd);
@@ -424,6 +469,9 @@ function createCircle() {
 Speed = setInterval(createCircle, freq);
 
 </script>
+<?php
+	$conn->close();
+?>
 </body>
 </html>
 
