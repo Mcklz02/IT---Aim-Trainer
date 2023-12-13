@@ -44,15 +44,15 @@ if (!$conn) {
 						mysqli_query($conn, "UPDATE top10 SET Name='{$entry['Name']}', Score={$entry['Score']} WHERE id = $i");
 						$i = $i+1;
 					}
-					echo "success";
+					//echo "success";
 				}else{
-					echo "not in top 10";
+					//echo "not in top 10";
 				}
 			}else{
-				echo "select error";
+				//echo "select error";
 			}			
 		}else{
-			echo "fail";
+			//echo "fail";
 		}
 ?>
 <style>
@@ -83,6 +83,7 @@ body {
     background-color: rgb(51, 51, 69);
     text-align: center;
     z-index: 4;
+	cursor: pointer;
 }
  #leaderboard-button {
     position: relative;
@@ -95,13 +96,17 @@ body {
     background-color: rgb(51, 51, 69);
     text-align: center;
     z-index: 4;
+	cursor: pointer;
 }
- #settings-button:hover, .button:hover, #leaderboard-button:hover {
+ #settings-button:hover, #leaderboard-button:hover {
  	background-color: orange;
+ }
+ .button:hover{
+	text-shadow: 2px 2px orange;
  }
  #settings {
     display: none;
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -114,7 +119,7 @@ body {
 }
  #leaderboard {
     display: none;
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -151,6 +156,7 @@ th {
     background-color: rgb(51, 51, 69);
     text-align: center;
     font-size:175%;
+	cursor: pointer;
  }
  .setting-category {
     width: 150px;
@@ -175,11 +181,12 @@ th {
     background-color: rgb(51, 51, 69);
     text-align: center;
     font-size:175%;
+	line-height: 1.5;
  }
 #points {
 	transform: translate(-475px, 0);
 }
-#accuracy {
+#combo {
 	transform: translate(-125px, 0);
 }
 #reac-speed {
@@ -205,12 +212,68 @@ th {
     cursor: pointer;
     z-index: 2;
 }
+#endGameForm{
+	display: none;
+	position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+	border-radius: 25px;
+	background-color: rgb(32, 32, 70);
+	padding: 20px;
+	z-index: 3;
+	font-size:125%;
+}
+input[type=text], select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size:125%;
+}
+input[type=submit] {
+  width: 100%;
+  background-color: rgb(51, 51, 69);
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size:125%;
+}
+input[type=submit]:hover {
+  background-color: orange;
+}
+#message {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 25px;
+    background-color: rgb(39, 39, 72);
+    text-align: center;
+	padding: 25px;
+	font-size:175%;
+    z-index: 3;
+}
+#instruction {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 300px;
+  border: 3px solid orange;
+  z-index: 3;
+}
+
 
 </style>
 </head>
 <body>
-
-
 <div id="header">
 	<h1>Aim Trainer</h1>
 </div>
@@ -230,7 +293,7 @@ th {
     <div class="button", id="speed-fast">
     	<p> High </p>
     </div>
-    <div class="button", id="speed-normal">
+    <div class="button", id="speed-normal", style="background-color: orange">
     	<p> Normal </p>
     </div>
     <div class="button", id="speed-slow">
@@ -242,7 +305,7 @@ th {
     <div class="button", id="disap-fast">
     	<p> Short </p>
     </div>
-    <div class="button", id="disap-normal">
+    <div class="button", id="disap-normal", style="background-color: orange">
     	<p> Normal </p>
     </div>
     <div class="button", id="disap-slow">
@@ -254,7 +317,7 @@ th {
     <div class="button", id="size-small">
     	<p> Small </p>
     </div>    
-    <div class="button", id="size-normal">
+    <div class="button", id="size-normal", style="background-color: orange">
     	<p> Normal </p>
     </div>
 	<div class="button", id="size-big">
@@ -268,12 +331,14 @@ th {
             <th>Score</th>
         </tr>
 		<?php
+		$x = 1;
 		$sql = "SELECT * FROM top10";
 		$result = mysqli_query($conn, $sql);
 
 		if (mysqli_num_rows($result) > 0) {
 			while($row = mysqli_fetch_assoc($result)) {
-				echo "<tr><td>". $row["Name"]."</td><td>".$row["Score"]."</td></tr>";
+				echo "<tr><td>". $row["Name"]."</td><td id=score".$x.">".$row["Score"]."</td></tr>";
+				$x++;
 			}
 		} else {
 			echo "0 results";
@@ -281,12 +346,14 @@ th {
 		?>
 	</table>
 </div>
-<div class="display", id="points"> Points: </div> 
-<div class="display", id="accuracy"> Accuracy: </div> 
-<div class="display", id="reac-speed"> Reaction Speed: </div> 
+<div class="display", id="points"> Points: <br> 0</div> 
+<div class="display", id="combo"> Combo: <br> 0</div> 
+<div class="display", id="reac-speed"> Reaction Speed: <br> - </div> 
 <div id="game-container"> </div>
-<div id="endGameForm", style="display:none"> 
-	<form action="AimTrainer.php" method="post">
+<div id="endGameForm"> 
+	<form action="AimTrainer.php" method="post", autocomplete="off">
+		<p> Congratulations! </p> 
+		<p> Your score will now be entered into the leaderboard </p>
         <label for="userName">Your Name:</label>
         <input type="text" id="userName" name="userName">
 
@@ -295,13 +362,15 @@ th {
         <input type="submit" value="Submit">
     </form>
 </div>
+<div id="message"> Lorem ipsum </div>
+<div id="instruction"> Press 'Space' to stop the game and record your score </div>
 
 <script>
 let mult = 1;
 let acc;
-let tmax = 2000;
+let tmax = 1500;
 let t;
-let freq = 1000;
+let freq = 1250;
 let maxN = Math.ceil(tmax/freq)+1;
 let size = 100;
 function ShowSettings() {
@@ -327,57 +396,83 @@ function Menu() {
 			clearInterval(Speed);
 			freq = 750;
 			Speed = setInterval(createCircle, freq);
+			document.getElementById("speed-normal").style.backgroundColor = "rgb(51, 51, 69)";
+			document.getElementById("speed-slow").style.backgroundColor = "rgb(51, 51, 69)";
+			event.target.style.backgroundColor = "orange";
 			break;
 		case "speed-normal":
 			clearInterval(Speed);
 			freq = 1250;
 			Speed = setInterval(createCircle, freq);
+			document.getElementById("speed-fast").style.backgroundColor = "rgb(51, 51, 69)";
+			document.getElementById("speed-slow").style.backgroundColor = "rgb(51, 51, 69)";
+			event.target.style.backgroundColor = "orange";
 			break;
 		case "speed-slow":
 			clearInterval(Speed);
 			freq = 1750;
 			Speed = setInterval(createCircle, freq);
+			document.getElementById("speed-normal").style.backgroundColor = "rgb(51, 51, 69)";
+			document.getElementById("speed-fast").style.backgroundColor = "rgb(51, 51, 69)";
+			event.target.style.backgroundColor = "orange";
 			break;
 		case "disap-fast":
 			tmax = 1000;
+			document.getElementById("disap-normal").style.backgroundColor = "rgb(51, 51, 69)";
+			document.getElementById("disap-slow").style.backgroundColor = "rgb(51, 51, 69)";
+			event.target.style.backgroundColor = "orange";
 			break;
 		case "disap-normal":
 			tmax = 1500;
+			document.getElementById("disap-fast").style.backgroundColor = "rgb(51, 51, 69)";
+			document.getElementById("disap-slow").style.backgroundColor = "rgb(51, 51, 69)";
+			event.target.style.backgroundColor = "orange";			
 			break;
 		case "disap-slow":
 			tmax = 2500;
+			document.getElementById("disap-normal").style.backgroundColor = "rgb(51, 51, 69)";
+			document.getElementById("disap-fast").style.backgroundColor = "rgb(51, 51, 69)";
+			event.target.style.backgroundColor = "orange";
 			break;		
 		case "size-big":
 			size = 150;
+			document.getElementById("size-normal").style.backgroundColor = "rgb(51, 51, 69)";
+			document.getElementById("size-small").style.backgroundColor = "rgb(51, 51, 69)";
+			event.target.style.backgroundColor = "orange";
 			break;
 		case "size-normal":
 			size = 100;
+			document.getElementById("size-big").style.backgroundColor = "rgb(51, 51, 69)";
+			document.getElementById("size-small").style.backgroundColor = "rgb(51, 51, 69)";
+			event.target.style.backgroundColor = "orange";
 			break;
 		case "size-small":
 			size = 50;
+			document.getElementById("size-big").style.backgroundColor = "rgb(51, 51, 69)";
+			document.getElementById("size-normal").style.backgroundColor = "rgb(51, 51, 69)";
+			event.target.style.backgroundColor = "orange";
 			break;		
 	}
 }
-
 const pointsElement = document.getElementById('points');
-const accElement = document.getElementById('accuracy');
+const comboElement = document.getElementById('combo');
 const reacElement = document.getElementById('reac-speed');
 const gameContainer = document.getElementById('game-container');
 let Points = 0;
 function calcPoints(m, a, tm, t1){
 	Points += m * (50 * a + 50 * ((tm - t1) / tm));
 	Points = Math.ceil(Points);
-	pointsElement.innerHTML = 'Points: \n' + Points;
+	pointsElement.innerHTML = 'Points: <br>' + Points;
 }
 function circleClick(){
 
 	if(event.target.classList.contains('circle')){
 		let endTime = new Date();
 		t = endTime - event.target.dataset.startTime;
-		reacElement.innerHTML = t;
+		reacElement.innerHTML = 'Reaction Speed: <br>' + t + 'ms';
 		event.target.dataset.flag = 1;
 		mult++;
-		accElement.innerHTML = mult;
+		comboElement.innerHTML = 'Combo: <br>' + mult;
 	}
 
 	if (event.target.id == 'circle1') {
@@ -404,13 +499,16 @@ function circleClick(){
 	
 }
 gameContainer.addEventListener('click', circleClick);
-
 function gameEnd(){
 	if(event.key == " "){
 		clearInterval(Speed);
-		document.getElementById("endGameForm").style.display = "block";
-		document.getElementById("formPoints").value = Points;
-		// wyswietlenie komunikatu o zdobytych pkt (moze w formularzu?)
+		if(Points > Number(document.getElementById('score10').innerHTML)){
+			document.getElementById("endGameForm").style.display = "block";
+			document.getElementById("formPoints").value = Points;
+		}else{
+			document.getElementById('message').innerHTML = "Your score wasn't high enough to get to the top 10. Better luck next time!";
+			document.getElementById('message').style.display = "block";
+		}
 	}
 }
 document.addEventListener('keypress', gameEnd);
@@ -463,18 +561,15 @@ function createCircle() {
                 circle.remove();
                 circle2.remove();
                 circle3.remove();
-				if(circle.dataset.flag==0&&circle2.dataset.flag==0&&circle3.dataset.flag==0){mult=1;accElement.innerHTML=mult;};
+				if(circle.dataset.flag==0&&circle2.dataset.flag==0&&circle3.dataset.flag==0){
+					mult=1;comboElement.innerHTML='Combo: <br> 0';reacElement.innerHTML='Reaction Speed: <br> -';};
             }, tmax);
         }
 Speed = setInterval(createCircle, freq);
 
 </script>
-<?php
-	$conn->close();
-?>
+	<?php
+		$conn->close();
+	?>
 </body>
 </html>
-
-
-
-
